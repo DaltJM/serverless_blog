@@ -2,10 +2,16 @@ import * as cdk from "aws-cdk-lib";
 import { Duration, aws_cognito } from "aws-cdk-lib";
 import { Construct } from "constructs";
 
-export interface ServerlessBlogStackProps extends cdk.StackProps {}
+export interface ServerlessBlogStackProps extends cdk.StackProps {
+  readonly project: string;
+  readonly stage: string;
+  readonly cognitoFromEmail: string;
+  readonly cognitoFromName: string;
+  readonly cognitoSesVerifiedDomain: string;
+}
 
 export class ServerlessBlogStack extends cdk.Stack {
-  constructor(scope: Construct, id: string, props?: ServerlessBlogStackProps) {
+  constructor(scope: Construct, id: string, props: ServerlessBlogStackProps) {
     super(scope, id, props);
 
     // User Auth
@@ -18,9 +24,9 @@ export class ServerlessBlogStack extends cdk.Stack {
         sms: false,
       },
       email: aws_cognito.UserPoolEmail.withSES({ // Will need to setup an SES verifed email/identity and provide cognito permissions to use it 
-        fromEmail: "no-reply@placeholder.com",
-        fromName: "serverlessBlog",
-        sesVerifiedDomain: "",
+        fromEmail: props.cognitoFromEmail,
+        fromName: props.cognitoFromName,
+        sesVerifiedDomain: props.cognitoSesVerifiedDomain,
       }),
       passwordPolicy: {
         minLength: 12,
