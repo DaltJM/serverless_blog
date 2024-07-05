@@ -64,7 +64,15 @@ export class ServerlessBlogStack extends cdk.Stack {
         emailStyle: aws_cognito.VerificationEmailStyle.LINK
       }
     });
-    
+    cognitoUserPool.addClient("Google-SSO", {
+      supportedIdentityProviders: [
+        aws_cognito.UserPoolClientIdentityProvider.GOOGLE,        
+      ],
+      oAuth: {},
+      accessTokenValidity: Duration.hours(24),
+      refreshTokenValidity: Duration.days(90),
+      // need to generate redirect, client id and secret and store in screts manager
+    })
     // Blog post management
     // DynamoDB
 
