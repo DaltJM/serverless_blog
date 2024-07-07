@@ -1,19 +1,41 @@
 import * as cdk from "aws-cdk-lib";
-import { Duration, aws_cognito } from "aws-cdk-lib";
+import { Duration, aws_cognito, aws_ssm, aws_secretsmanager } from "aws-cdk-lib";
 import { Construct } from "constructs";
 
 export interface ServerlessBlogStackProps extends cdk.StackProps {
   readonly project: string;
   readonly stage: string;
-  readonly cognitoFromEmail: string;
+  readonly cognitoFromEmailPrefix: string;
   readonly cognitoFromName: string;
-  readonly cognitoSesVerifiedDomain: string;
+  readonly accountIdParameter: string;
+  readonly domainNameParameter: string;
+  readonly googleOAuthClientIdParameter: string;
+  readonly googleOAuthClientSecret: string;
 }
 
 export class ServerlessBlogStack extends cdk.Stack {
   constructor(scope: Construct, id: string, props: ServerlessBlogStackProps) {
     super(scope, id, props);
 
+    // Import some values from Parameter Store
+    // Account ID to deploy this appliation
+
+    const accountIdParameter = aws_ssm.StringParameter.valueFromLookup(
+      this,
+      props.accountIdParameter
+    );
+
+    const domainNameParameter = aws_ssm.StringParameter.valueFromLookup(
+      this,
+      props.domainNameParameter
+    );
+
+    const googleOAuthClientIdParameter = aws_ssm.StringParameter.valueFromLookup(
+      this,
+      props.googleOAuthClientIdParameter
+    );
+
+    const googleOAuthClientSecret = aws_secretsmanager.Secret.fromSecretNameV2(this, "SecretName", props.googleOAuthClientSecret)
     // User Auth
     // Cognito User Pool
     const cognitoUserPool = new aws_cognito.UserPool(this, "blogUserPool", {
@@ -27,13 +49,14 @@ export class ServerlessBlogStack extends cdk.Stack {
         sms: false,
       },
       // Configure Cognito to send emails to users with SES
-      email: aws_cognito.UserPoolEmail.withSES({ // Will need to setup an SES verifed email/identity and provide cognito permissions to use it 
+      email: aws_cognito.UserPoolEmail.withSES({
+        // Will need to setup an SES verifed email/identity and provide cognito permissions to use it
         // The from email used for sending emails
-        fromEmail: props.cognitoFromEmail,
+        fromEmail: props.cognitoFromEmailPrefix + domainNameParameter,
         // The name that appears on the sent emails
         fromName: props.cognitoFromName,
         // SES Verified custom domain to be used to verify the identity.
-        sesVerifiedDomain: props.cognitoSesVerifiedDomain,
+        sesVerifiedDomain: domainNameParameter,
       }),
       // Sets a password policy
       passwordPolicy: {
@@ -57,21 +80,20 @@ export class ServerlessBlogStack extends cdk.Stack {
       // Configure the email that is sent to a user when they sign themselves up
       userVerification: {
         // Subject of the email
-        emailSubject: "",
+        emailSubject: `${props.cognitoFromName} Sign-up`,
         // Body of the email
-        emailBody: "",
+        emailBody: "{##Verify Email##}",
         // Sends a link the user can follow to verify their account
-        emailStyle: aws_cognito.VerificationEmailStyle.LINK
-      }
+        emailStyle: aws_cognito.VerificationEmailStyle.LINK,
+      },
     });
-    cognitoUserPool.addClient("Google-SSO", {
-      supportedIdentityProviders: [
-        aws_cognito.UserPoolClientIdentityProvider.GOOGLE,        
-      ],
-      oAuth: {},
-      accessTokenValidity: Duration.hours(24),
-      refreshTokenValidity: Duration.days(90),
-      // need to generate redirect, client id and secret and store in screts manager
+
+    // Setup google to be an Authentication provider for Cognito and add it to the above userPool
+    // https://developers.google.com/identity/sign-in/web/sign-in
+    const googleUserPool = new aws_cognito.UserPoolIdentityProviderGoogle(this, "googleUserPool",{
+      userPool: cognitoUserPool,
+      clientId: googleOAuthClientIdParameter,
+      clientSecretValue: googleOAuthClientSecret.secretValue,
     })
     // Blog post management
     // DynamoDB
