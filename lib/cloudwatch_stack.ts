@@ -13,9 +13,9 @@ export interface CloudwatchStackProps extends cdk.StackProps {
   readonly stage: string;
 }
 
-export class CloudwatchStack extends cdk.Stack {
+export class CloudwatchStack extends Construct {
   constructor(scope: Construct, id: string, props: CloudwatchStackProps) {
-    super(scope, id, props);
+    super(scope, id);
     // Cloudwatch
   }
 }

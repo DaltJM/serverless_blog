@@ -18,9 +18,9 @@ export interface CognitoStackProps extends cdk.StackProps {
   readonly googleOAuthClientSecret: string;
 }
 
-export class CognitoStack extends cdk.Stack {
+export class CognitoStack extends Construct {
   constructor(scope: Construct, id: string, props: CognitoStackProps) {
-    super(scope, id, props);
+    super(scope, id);
 
     // Import some values from Parameter Store
     // Account ID to deploy this appliation
