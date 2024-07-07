@@ -13,9 +13,9 @@ export interface LambdaStackProps extends cdk.StackProps {
   readonly stage: string;
 }
 
-export class LambdaStack extends cdk.Stack {
+export class LambdaStack extends Construct {
   constructor(scope: Construct, id: string, props: LambdaStackProps) {
-    super(scope, id, props);
+    super(scope, id);
     // Lambda
   }
 }

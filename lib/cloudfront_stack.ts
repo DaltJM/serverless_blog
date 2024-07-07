@@ -13,9 +13,9 @@ export interface CloudfrontStackProps extends cdk.StackProps {
   readonly stage: string;
 }
 
-export class CloudfrontStack extends cdk.Stack {
+export class CloudfrontStack extends Construct {
   constructor(scope: Construct, id: string, props: CloudfrontStackProps) {
-    super(scope, id, props);
+    super(scope, id);
     // Cloudfront
   }
 }

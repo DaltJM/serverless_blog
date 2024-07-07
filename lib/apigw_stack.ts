@@ -13,9 +13,9 @@ export interface APIGWStackProps extends cdk.StackProps {
   readonly stage: string;
 }
 
-export class APIGWStack extends cdk.Stack {
+export class APIGWStack extends Construct {
   constructor(scope: Construct, id: string, props: APIGWStackProps) {
-    super(scope, id, props);
+    super(scope, id);
     // API Gateway
   }
 }

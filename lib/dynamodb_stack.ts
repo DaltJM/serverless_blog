@@ -13,9 +13,9 @@ export interface DynamoDBStackProps extends cdk.StackProps {
   readonly stage: string;
 }
 
-export class DynamoDBStack extends cdk.Stack {
+export class DynamoDBStack extends Construct {
   constructor(scope: Construct, id: string, props: DynamoDBStackProps) {
-    super(scope, id, props);
+    super(scope, id);
     // Blog post management
     // DynamoDB
   }

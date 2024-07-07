@@ -55,5 +55,17 @@ export class ServerlessBlogStack extends cdk.Stack {
       // It will be implemented when I figure out all the other secrets I need to store so I can make the most of the 30 day free trial.
       googleOAuthClientSecret: props.googleOAuthClientSecret,
     });
+
+    new DynamoDBStack(this, "DynamoDBStack", {
+      ...commonProps
+    });
+
+    new LambdaStack(this, "LambdaStack", {
+      ...commonProps
+    });
+
+    new S3Stack(this, "S3Stack", {
+      ...commonProps
+    })
   }
 }
