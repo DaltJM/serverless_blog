@@ -2,6 +2,7 @@
 import "source-map-support/register";
 import * as cdk from "aws-cdk-lib";
 import { ServerlessBlogStack } from "../lib/serverless_blog-stack";
+import { CloudwatchStack } from "../lib/cloudwatch_stack";
 
 const app = new cdk.App();
 
@@ -28,6 +29,7 @@ const app = new cdk.App();
     // It will be implemented when I figure out all the other secrets I need to store so I can make the most of the 30 day free trial.
     googleOAuthClientSecret: "PLACEHOLDER", 
   });
+  
   cdk.Tags.of(app).add("Project", project);
   cdk.Tags.of(app).add("Stage", stage);
 }

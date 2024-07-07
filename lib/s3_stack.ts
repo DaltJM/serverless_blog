@@ -13,9 +13,9 @@ export interface S3StackProps extends cdk.StackProps {
   readonly stage: string;
 }
 
-export class S3Stack extends cdk.Stack {
+export class S3Stack extends Construct {
   constructor(scope: Construct, id: string, props: S3StackProps) {
-    super(scope, id, props);
+    super(scope, id);
     // S3
   }
 }
