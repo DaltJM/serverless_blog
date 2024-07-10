@@ -25,9 +25,7 @@ const app = new cdk.App();
     accountIdParameter: "/serverlessBlog/accountId",
     domainNameParameter: "/serverlessBlog/domainName",
     googleOAuthClientIdParameter: "/serverlessBlog/googleOAuthClientId",
-    // googleOAuthClientSecret has not yet been implemented because I'm cheap and don't want to pay $.40 USD/month/secret.
-    // It will be implemented when I figure out all the other secrets I need to store so I can make the most of the 30 day free trial.
-    googleOAuthClientSecret: "PLACEHOLDER", 
+    cognitoUserPoolRetentionOnStackDestroy: cdk.RemovalPolicy.DESTROY
   });
   
   cdk.Tags.of(app).add("Project", project);
