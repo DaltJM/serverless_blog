@@ -16,7 +16,7 @@ export interface ServerlessBlogStackProps extends cdk.StackProps {
   readonly accountIdParameter: string;
   readonly domainNameParameter: string;
   readonly googleOAuthClientIdParameter: string;
-  readonly googleOAuthClientSecret: string;
+  readonly cognitoUserPoolRetentionOnStackDestroy: cdk.RemovalPolicy;
 }
 
 export class ServerlessBlogStack extends cdk.Stack {
@@ -51,9 +51,7 @@ export class ServerlessBlogStack extends cdk.Stack {
       accountIdParameter: props.accountIdParameter,
       domainNameParameter: props.domainNameParameter,
       googleOAuthClientIdParameter: props.googleOAuthClientIdParameter,
-      // googleOAuthClientSecret has not yet been implemented because I'm cheap and don't want to pay $.40 USD/month/secret.
-      // It will be implemented when I figure out all the other secrets I need to store so I can make the most of the 30 day free trial.
-      googleOAuthClientSecret: props.googleOAuthClientSecret,
+      cognitoUserPoolRetentionOnStackDestroy: props.cognitoUserPoolRetentionOnStackDestroy
     });
 
     new DynamoDBStack(this, "DynamoDBStack", {

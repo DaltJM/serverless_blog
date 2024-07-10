@@ -15,7 +15,7 @@ export interface CognitoStackProps extends cdk.StackProps {
   readonly accountIdParameter: string;
   readonly domainNameParameter: string;
   readonly googleOAuthClientIdParameter: string;
-  readonly googleOAuthClientSecret: string;
+  readonly cognitoUserPoolRetentionOnStackDestroy: cdk.RemovalPolicy;
 }
 
 export class CognitoStack extends Construct {
@@ -41,11 +41,10 @@ export class CognitoStack extends Construct {
         props.googleOAuthClientIdParameter
       );
 
-    const googleOAuthClientSecret = aws_secretsmanager.Secret.fromSecretNameV2(
-      this,
-      "SecretName",
-      props.googleOAuthClientSecret
-    );
+    const googleOAuthClientSecret = new aws_secretsmanager.Secret(this, "googleOAuthClientSecret", {
+      secretName: "googleOAuthClientSecret",
+      description: "The client secret generated in the Google API console",
+    })
     // User Auth
     // Cognito User Pool
     const cognitoUserPool = new aws_cognito.UserPool(this, "blogUserPool", {
@@ -96,6 +95,7 @@ export class CognitoStack extends Construct {
         // Sends a link the user can follow to verify their account
         emailStyle: aws_cognito.VerificationEmailStyle.LINK,
       },
+      removalPolicy: props.cognitoUserPoolRetentionOnStackDestroy
     });
 
     // Setup google to be an Authentication provider for Cognito and add it to the above userPool
