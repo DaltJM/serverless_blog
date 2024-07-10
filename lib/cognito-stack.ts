@@ -1,11 +1,11 @@
-import * as cdk from "aws-cdk-lib";
+import * as cdk from 'aws-cdk-lib';
 import {
   Duration,
   aws_cognito,
   aws_ssm,
   aws_secretsmanager,
-} from "aws-cdk-lib";
-import { Construct } from "constructs";
+} from 'aws-cdk-lib';
+import { Construct } from 'constructs';
 
 export interface CognitoStackProps extends cdk.StackProps {
   readonly project: string;
@@ -27,27 +27,31 @@ export class CognitoStack extends Construct {
 
     const accountIdParameter = aws_ssm.StringParameter.valueFromLookup(
       this,
-      props.accountIdParameter
+      props.accountIdParameter,
     );
 
     const domainNameParameter = aws_ssm.StringParameter.valueFromLookup(
       this,
-      props.domainNameParameter
+      props.domainNameParameter,
     );
 
     const googleOAuthClientIdParameter =
       aws_ssm.StringParameter.valueFromLookup(
         this,
-        props.googleOAuthClientIdParameter
+        props.googleOAuthClientIdParameter,
       );
 
-    const googleOAuthClientSecret = new aws_secretsmanager.Secret(this, "googleOAuthClientSecret", {
-      secretName: "googleOAuthClientSecret",
-      description: "The client secret generated in the Google API console",
-    })
+    const googleOAuthClientSecret = new aws_secretsmanager.Secret(
+      this,
+      'googleOAuthClientSecret',
+      {
+        secretName: 'googleOAuthClientSecret',
+        description: 'The client secret generated in the Google API console',
+      },
+    );
     // User Auth
     // Cognito User Pool
-    const cognitoUserPool = new aws_cognito.UserPool(this, "blogUserPool", {
+    const cognitoUserPool = new aws_cognito.UserPool(this, 'blogUserPool', {
       // Sets account recovery to email only with a link
       accountRecovery: aws_cognito.AccountRecovery.EMAIL_ONLY,
       // Enforces the use of an MFW device
@@ -91,23 +95,23 @@ export class CognitoStack extends Construct {
         // Subject of the email
         emailSubject: `${props.cognitoFromName} Sign-up`,
         // Body of the email
-        emailBody: "{##Verify Email##}",
+        emailBody: '{##Verify Email##}',
         // Sends a link the user can follow to verify their account
         emailStyle: aws_cognito.VerificationEmailStyle.LINK,
       },
-      removalPolicy: props.cognitoUserPoolRetentionOnStackDestroy
+      removalPolicy: props.cognitoUserPoolRetentionOnStackDestroy,
     });
 
     // Setup google to be an Authentication provider for Cognito and add it to the above userPool
     // https://developers.google.com/identity/sign-in/web/sign-in
     const googleUserPool = new aws_cognito.UserPoolIdentityProviderGoogle(
       this,
-      "googleUserPool",
+      'googleUserPool',
       {
         userPool: cognitoUserPool,
         clientId: googleOAuthClientIdParameter,
         clientSecretValue: googleOAuthClientSecret.secretValue,
-      }
+      },
     );
   }
 }
