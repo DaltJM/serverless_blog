@@ -1,12 +1,12 @@
-import * as cdk from "aws-cdk-lib";
-import { APIGWStack } from "./apigw_stack";
-import { CloudfrontStack } from "./cloudfront_stack";
-import { CloudwatchStack } from "./cloudwatch_stack";
-import { CognitoStack } from "./cognito_stack";
-import { DynamoDBStack } from "./dynamodb_stack";
-import { LambdaStack } from "./lambda_stack";
-import { S3Stack } from "./s3_stack";
-import { Construct } from "constructs";
+import * as cdk from 'aws-cdk-lib';
+import { APIGWStack } from './apigw-stack';
+import { CloudfrontStack } from './cloudfront-stack';
+import { CloudwatchStack } from './cloudwatch-stack';
+import { CognitoStack } from './cognito-stack';
+import { DynamoDBStack } from './dynamodb-stack';
+import { LambdaStack } from './lambda-stack';
+import { S3Stack } from './s3-stack';
+import { Construct } from 'constructs';
 
 export interface ServerlessBlogStackProps extends cdk.StackProps {
   readonly project: string;
@@ -28,42 +28,43 @@ export class ServerlessBlogStack extends cdk.Stack {
         account: process.env.CDK_DEFAULT_ACCOUNT,
         region: process.env.CDK_DEFAULT_REGION,
       },
-      project: "serverlessBlogStack",
-      stage: "Development",
+      project: 'serverlessBlogStack',
+      stage: 'Development',
     };
 
-    new APIGWStack(this, "APIGWStack", {
+    new APIGWStack(this, 'APIGWStack', {
       ...commonProps,
     });
 
-    new CloudfrontStack(this, "CloudfrontStack", {
+    new CloudfrontStack(this, 'CloudfrontStack', {
       ...commonProps,
     });
 
-    new CloudwatchStack(this, "CloudwatchStack", {
+    new CloudwatchStack(this, 'CloudwatchStack', {
       ...commonProps,
     });
 
-    new CognitoStack(this, "CognitoStack", {
+    new CognitoStack(this, 'CognitoStack', {
       ...commonProps,
       cognitoFromEmailPrefix: props.cognitoFromEmailPrefix,
       cognitoFromName: props.cognitoFromName,
       accountIdParameter: props.accountIdParameter,
       domainNameParameter: props.domainNameParameter,
       googleOAuthClientIdParameter: props.googleOAuthClientIdParameter,
-      cognitoUserPoolRetentionOnStackDestroy: props.cognitoUserPoolRetentionOnStackDestroy
+      cognitoUserPoolRetentionOnStackDestroy:
+        props.cognitoUserPoolRetentionOnStackDestroy,
     });
 
-    new DynamoDBStack(this, "DynamoDBStack", {
-      ...commonProps
+    new DynamoDBStack(this, 'DynamoDBStack', {
+      ...commonProps,
     });
 
-    new LambdaStack(this, "LambdaStack", {
-      ...commonProps
+    new LambdaStack(this, 'LambdaStack', {
+      ...commonProps,
     });
 
-    new S3Stack(this, "S3Stack", {
-      ...commonProps
-    })
+    new S3Stack(this, 'S3Stack', {
+      ...commonProps,
+    });
   }
 }
