@@ -32,8 +32,8 @@ function Register() {
       //DEV
       alert('User registered successfully');
       console.log('User registered:', result.user);
-      //Redirect to login component
-      navigate('/login');
+      //Redirect to activate-account component
+      navigate('/activate-account'); // Redirect to activate account page
     });
   };
 

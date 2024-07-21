@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { CognitoUserPool, CognitoUser, AuthenticationDetails } from 'amazon-cognito-identity-js';
-import { useNavigate } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 
 const userPoolId = import.meta.env.VITE_USER_POOL_ID;
 const clientId = import.meta.env.VITE_CLIENT_ID;
@@ -64,6 +64,7 @@ function Login() {
         />
         <button type="submit">Login</button>
       </form>
+      <p>Already signed up? <Link to="/activate-account">Activate your account</Link></p>
     </div>
   );
 }

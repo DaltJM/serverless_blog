@@ -3,6 +3,7 @@ import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import Register from './components/Register';
 import Login from './components/Login';
 import Home from './components/Home';
+import ActivateAccount from './components/ActivateAccount';
 import PrivateRoute from './components/PrivateRoute';
 
 function App() {
@@ -20,6 +21,7 @@ function App() {
             </PrivateRoute>
           }
         />
+        <Route path="/activate-account" element={<ActivateAccount />} />
         <Route path="/" element={<Login />} />
       </Routes>
     </Router>
